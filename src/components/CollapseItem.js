@@ -40,8 +40,8 @@ export default function CollapseItem({err}) {
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
-          <Typography variant="body1">Email: chetan@gmail.com</Typography>
-          <Typography variant="body1">Password: 12345</Typography>
+          <Typography variant="body1">Email: adel@gmail.com</Typography>
+          <Typography variant="body1">Password: 12345!?Ab</Typography>
         </CardContent>
       </Collapse>
     </Card>

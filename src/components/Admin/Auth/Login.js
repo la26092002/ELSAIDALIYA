@@ -15,7 +15,9 @@ import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import CollapseItem from "./CollapseItem";
+import CollapseItem from "../../CollapseItem";
+import { URL } from "../../../constants/Constants";
+
 
 function Copyright(props) {
   return (
@@ -44,16 +46,34 @@ export default function Login() {
     event.preventDefault();
   };
 
-  const handleSubmit = (event) => {
+  
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const email = data.get("email");
+    const phone = data.get("phone");
     const password = data.get("password");
-    if (email === "chetan@gmail.com" && password === "12345") {
-      localStorage.setItem("token", "Hello World");
-      navigate("/");
-    } else {
-      setErr("Please Enter Correct Email or Password");
+
+    try {
+      const response = await fetch(URL+"/api/admin/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          numberPhone: phone,
+          password: password,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Invalid credentials");
+      }
+
+      const result = await response.json();
+      localStorage.setItem("tokenAdmin", result.token); // Assuming the API returns a token
+      navigate("/admin");
+    } catch (error) {
+      setErr("Please enter correct email or password");
     }
   };
 
@@ -78,7 +98,7 @@ export default function Login() {
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
-              Sign in
+              Login Admin
             </Typography>
             <Box
               component="form"
@@ -90,10 +110,10 @@ export default function Login() {
                 margin="normal"
                 required
                 fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
+                id="phone"
+                label="Numero de Telephone"
+                name="phone"
+                autoComplete="phone"
                 autoFocus
               />
               <FormControl sx={{ mt: 2, width: "100%" }} variant="outlined">
@@ -126,11 +146,9 @@ export default function Login() {
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
               >
-                Sign In
+                Log In
               </Button>
-              <a href="#" onClick={Register} role="button" tabIndex="0">
-                Register
-              </a>
+              
             </Box>
             {err === "" ? "" : <CollapseItem err={err} />}
           </Box>
